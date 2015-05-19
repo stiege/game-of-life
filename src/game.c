@@ -24,11 +24,21 @@ char * GME_show(struct game_board_t * board)
         for (int j = 0; j < board->size; ++j)
         {
             *current++ = ' ';
-
         }
         *current++ = '\n';
     }
     *current = '\0';
 
     return result;
+}
+
+void GME_set(struct game_board_t * board,
+    unsigned int x,
+    unsigned int y)
+{
+
+}
+void GME_iterate(struct game_board_t * board)
+{
+
 }
