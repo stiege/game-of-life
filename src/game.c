@@ -9,6 +9,19 @@ struct game_board_t
     char * board_string;
 };
 
+#if 0
+struct cell_t
+{
+
+};
+
+struct cell_list_t
+{
+    struct cell_t * list;
+    unsigned int length;
+};
+#endif
+
 struct game_board_t * GME_init(unsigned int _size)
 {
     unsigned int string_size = _size * (_size + 1 ) + 1;
@@ -33,14 +46,18 @@ char * GME_show(struct game_board_t * board)
     return board->board_string;
 }
 
-void GME_set(struct game_board_t * board,
-    unsigned int x,
-    unsigned int y)
+void GME_set(struct game_board_t * board, struct point_t point)
 {
-    unsigned int offset = x + y * (board->size + 1);
+    unsigned int offset = point.x + point.y * (board->size + 1);
     board->board_string[offset] = 'o';
 }
+
 void GME_iterate(struct game_board_t * board)
 {
-
+#if 0
+    cells * living_cells = cells_from_board(board->board_string);
+    cells * dying_cells = find_underpopulation_cells(living_cells);
+    cells * new_board = remove_cells(living_cells, dying_cells);
+    return board_from_cells(new_board);
+#endif
 }

@@ -34,7 +34,9 @@ void test_empty_size_5_gameboard_shows_blank(void)
 void test_can_set_game_board(void)
 {
     struct game_board_t * game_board = GME_init(3);
-    GME_set(game_board, 1, 1);
+    GME_set(game_board, (struct point_t) {
+        .x = 1, .y = 1
+    });
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         " o \n"
@@ -45,7 +47,7 @@ void test_can_set_game_board(void)
 void test_single_cell_dies(void)
 {
     struct game_board_t * game_board = GME_init(3);
-    GME_set(game_board, 1, 1);
+    GME_set(game_board, (struct point_t) {.x = 1, .y = 1});
     GME_iterate(game_board);
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
