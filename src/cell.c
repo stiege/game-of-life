@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdbool.h"
 
 struct cell_list_t
 {
@@ -9,11 +10,12 @@ struct cell_list_t
     unsigned int length;
 };
 
+static bool cell_is_underpopulated(struct cell_t cell);
 
-cell_list_t * CELL_list_from_string(char * string)
+cell_list_t * CELL_list_from_string(char const * string)
 {
     unsigned int cell_count = 0;
-    char * board_place = string;
+    char const * board_place = string;
     while('\0' != *board_place)
     {
         if ('o' == *board_place)
@@ -82,3 +84,44 @@ struct cell_t * CELL_pop_from_list(cell_list_t * cell_list)
     return ret_val;
 }
 
+cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
+{
+    cell_list_t * ret_val = NULL;
+    if (NULL == cells)
+    {
+
+    }
+    else
+    {
+        unsigned int underpopulated_count = 0;
+        for (unsigned int a = 0; a < cells->length; a++)
+        {
+            if (cell_is_underpopulated(cells->list[a]))
+            {
+                underpopulated_count++;
+            }
+        }
+
+        cell_list_t * underpopulated_cells = 
+            malloc(sizeof(struct cell_t) * underpopulated_count);
+
+        underpopulated_count = 0;
+        for (unsigned int a = 0; a < cells->length; a++)
+        {
+            if (cell_is_underpopulated(cells->list[a]))
+            {
+                underpopulated_cells->list[underpopulated_count] 
+                    = cells->list[a];
+                underpopulated_count++;
+            }
+        }
+
+    }
+
+    return ret_val;
+}
+
+static bool cell_is_underpopulated(struct cell_t cell)
+{
+    return false;
+}
