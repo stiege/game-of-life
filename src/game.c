@@ -9,19 +9,6 @@ struct game_board_t
     char * board_string;
 };
 
-#if 0
-struct cell_t
-{
-
-};
-
-struct cell_list_t
-{
-    struct cell_t * list;
-    unsigned int length;
-};
-#endif
-
 struct game_board_t * GME_init(unsigned int _size)
 {
     unsigned int string_size = _size * (_size + 1 ) + 1;
