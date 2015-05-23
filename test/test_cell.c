@@ -8,7 +8,13 @@ char const * underpopulated_board =
 " o "
 "   ";
 
+char const * underpopulated_in_corner_board = 
+"o  "
+"   "
+"   ";
+
 const struct cell_t underpopulated_cell_from_board = {.x=1,.y=1};
+const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
 struct mstats mdata_before;
 
 void setUp(void)
@@ -39,6 +45,21 @@ void test_returns_cells_from_string(void)
 
     CELL_list_dtor(cell_list);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+}
+
+void test_returns_cell_from_upper_left_corner(void)
+{
+    cell_list_t * cell_list = CELL_list_from_string(
+        underpopulated_in_corner_board);
+
+    struct cell_t cell_from_original;
+    TEST_ASSERT(CELL_pop_from_list(cell_list, &cell_from_original));
+
+    TEST_ASSERT_EQUAL_MEMORY(&underpopulated_in_corner, 
+        &cell_from_original,
+        sizeof(struct cell_t));
+
+    CELL_list_dtor(cell_list);
 }
 
 void test_returns_underpopulated_cells(void)
