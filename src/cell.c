@@ -50,7 +50,7 @@ cell_list_t * CELL_list_from_string(char const * string)
         {
             if ('o' == *board_place)
             {
-                cell_list->list[list_offset] = (struct cell_t){.x = 1, .y = 1};
+                cell_list->list[list_offset] = (struct cell_t){.x = x, .y = y};
                 list_offset++;
             }
             if ('\n')
