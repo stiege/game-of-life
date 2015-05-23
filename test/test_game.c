@@ -4,6 +4,7 @@
 #include "stdlib.h"
 #include "malloc/malloc.h"
 
+
 struct mstats mdata_before;
 struct mstats mdata_after;
 void setUp(void)
@@ -13,19 +14,29 @@ void setUp(void)
 
 void tearDown(void)
 {
-    mdata_after = mstats();
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mdata_after.chunks_used);
+}
+
+//This test is run first and results in the appearance of a memory leak
+//leak could be due to unity as no other tests have this leak.
+void test_memory_leak(void)
+{
+    struct game_board_t * const game_board = GME_init(3);
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_empty_size_3_gameboard_shows_blank(void)
 {
-    struct game_board_t * game_board = GME_init(3);
+    struct game_board_t * const game_board = GME_init(3);
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         "   \n"
         "   \n", GME_show(game_board)
         );
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
+
 
 void test_empty_size_5_gameboard_shows_blank(void)
 {
@@ -37,6 +48,8 @@ void test_empty_size_5_gameboard_shows_blank(void)
         "     \n"
         "     \n", GME_show(game_board)
         );
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_can_set_game_board(void)
@@ -50,6 +63,8 @@ void test_can_set_game_board(void)
         " o \n"
         "   \n", GME_show(game_board)
         );
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_single_cell_dies(void)
@@ -62,4 +77,6 @@ void test_single_cell_dies(void)
         "   \n"
         "   \n", GME_show(game_board)
         );
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }

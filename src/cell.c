@@ -60,6 +60,12 @@ cell_list_t * CELL_list_from_string(char const * string)
     return cell_list;
 }
 
+void CELL_list_dtor(cell_list_t * cell_list)
+{
+    free(cell_list->list);
+    free(cell_list);
+}
+
 unsigned int CELL_get_list_length(cell_list_t * cell_list)
 {
     return cell_list->length;

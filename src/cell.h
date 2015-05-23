@@ -15,7 +15,7 @@ cell_list_t * CELL_list_from_string(char const * string);
 cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells);
 unsigned int CELL_get_list_length(cell_list_t * cell_list);
 bool CELL_pop_from_list(cell_list_t * cell_list, struct cell_t * cell);
-// void CELL_remove_from_list(cell_list_t * cell_list, cell_list_t * to_remove);
+void CELL_list_dtor(cell_list_t * cell_list);
 
 
 

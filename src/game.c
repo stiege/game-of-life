@@ -32,6 +32,12 @@ struct game_board_t * GME_init(unsigned int _size)
     return game_board;
 }
 
+void GME_game_board_dtor(struct game_board_t * game_board)
+{
+    free(game_board->board_string);
+    free(game_board);
+}
+
 char * GME_show(struct game_board_t * board)
 {
     return board->board_string;
@@ -52,6 +58,9 @@ void GME_iterate(struct game_board_t * board)
     {
         remove_cell_from_board(board, cell);
     }
+
+    CELL_list_dtor(living_cells);
+    CELL_list_dtor(dying_cells);
 
 }
 
