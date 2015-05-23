@@ -18,6 +18,7 @@ static unsigned int living_neighbours (
     struct cell_t cell);
 static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b);
 static bool uints_are_close(unsigned int a, unsigned int b);
+static bool list_contains(cell_list_t * list, struct cell_t cell);
 
 cell_list_t * CELL_list_from_string(char const * string)
 {
@@ -127,6 +128,23 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
     return ret_val;
 }
 
+// void CELL_remove_from_list(cell_list_t * cell_list, cell_list_t * to_remove)
+// {
+//     unsigned int size_of_new_list = cell_list->length - to_remove->length;
+//     cell_list_t new_list;
+//     new_list.list = malloc(size_of_new_list * sizeof(struct cell_t));
+//     new_list.length = 0;
+
+//     for (unsigned int i = 0; i < cell_list->length; i++)
+//     {
+//         if (!list_contains(to_remove, cell_list->list[i]))
+//         {
+//             new_list.list[new_list.length++]=cell_list->list[i];
+//         }
+//     }
+
+// }
+
 static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell)
 {
@@ -190,3 +208,16 @@ static bool uints_are_close(unsigned int a, unsigned int b)
 
     return ret_val;
 }
+
+// static bool list_contains(cell_list_t * list, struct cell_t cell)
+// {
+//     bool ret_val = false;
+//     for (unsigned int i = 0; i < list->length; i++)
+//     {
+//         if (memcmp(&list->list[i], &cell, sizeof(struct cell_t)))
+//         {
+//             ret_val = true;
+//         }
+//     }
+//     return ret_val;
+// }

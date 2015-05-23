@@ -1,5 +1,6 @@
 #include "unity.h"
 #include "game.h"
+#include "cell.h"
 
 void setUp(void)
 {

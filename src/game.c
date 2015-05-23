@@ -2,12 +2,16 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "strings.h"
+#include "cell.h"
 
 struct game_board_t
 {
     unsigned int size;
     char * board_string;
 };
+
+static void remove_cell_from_board(struct game_board_t * board,
+    struct cell_t cell);
 
 struct game_board_t * GME_init(unsigned int _size)
 {
@@ -41,10 +45,18 @@ void GME_set(struct game_board_t * board, struct point_t point)
 
 void GME_iterate(struct game_board_t * board)
 {
-#if 0
-    cells * living_cells = cells_from_board(board->board_string);
-    cells * dying_cells = find_underpopulation_cells(living_cells);
-    cells * new_board = remove_cells(living_cells, dying_cells);
-    return board_from_cells(new_board);
-#endif
+    cell_list_t * living_cells = CELL_list_from_string(board->board_string);
+    cell_list_t * dying_cells = CELL_filter_for_underpopulated(living_cells);
+    struct cell_t cell;
+    while(CELL_pop_from_list(dying_cells, &cell))
+    {
+        remove_cell_from_board(board, cell);
+    }
+
+}
+
+static void remove_cell_from_board(struct game_board_t * board,
+    struct cell_t cell)
+{
+    board->board_string[cell.y * (board->size + 1) + cell.x] = ' ';
 }
