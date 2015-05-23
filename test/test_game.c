@@ -1,13 +1,20 @@
 #include "unity.h"
 #include "game.h"
 #include "cell.h"
+#include "stdlib.h"
+#include "malloc/malloc.h"
 
+struct mstats mdata_before;
+struct mstats mdata_after;
 void setUp(void)
 {
+    mdata_before = mstats();
 }
 
 void tearDown(void)
 {
+    mdata_after = mstats();
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mdata_after.chunks_used);
 }
 
 void test_empty_size_3_gameboard_shows_blank(void)
