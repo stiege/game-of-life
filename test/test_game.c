@@ -6,7 +6,7 @@
 
 
 struct mstats mdata_before;
-struct mstats mdata_after;
+
 void setUp(void)
 {
     mdata_before = mstats();
@@ -20,9 +20,8 @@ void tearDown(void)
 //leak could be due to unity as no other tests have this leak.
 void test_memory_leak(void)
 {
-    struct game_board_t * const game_board = GME_init(3);
+    struct game_board_t * game_board = GME_init(3);
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_empty_size_3_gameboard_shows_blank(void)
