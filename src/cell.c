@@ -64,9 +64,9 @@ unsigned int CELL_get_list_length(cell_list_t * cell_list)
     return cell_list->length;
 }
 
-struct cell_t * CELL_pop_from_list(cell_list_t * cell_list)
+bool CELL_pop_from_list(cell_list_t * cell_list, struct cell_t * cell)
 {
-    struct cell_t * ret_val = NULL;
+    bool ret_val = false;
     if (0 == cell_list->length)
     {
 
@@ -78,14 +78,12 @@ struct cell_t * CELL_pop_from_list(cell_list_t * cell_list)
         struct cell_t * new_list = malloc(new_list_size);
         memcpy(new_list, cell_list->list, new_list_size);
 
-        struct cell_t * popped_value = malloc(sizeof(struct cell_t));
-
-        *popped_value = cell_list->list[new_list_size];
+        *cell = cell_list->list[new_list_size];
         free(cell_list->list);
         cell_list->list = new_list;
         cell_list->length = new_list_size;
 
-        ret_val = popped_value;
+        ret_val = true;
     }
 
     return ret_val;
