@@ -80,7 +80,7 @@ void test_single_cell_dies(void)
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
-void test_pair_remains(void)
+void test_persistent_block_remains(void)
 {
     struct game_board_t * game_board = GME_init(3);
     GME_set(game_board, (struct point_t) {.x = 1, .y = 1});
