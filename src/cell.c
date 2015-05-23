@@ -3,6 +3,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "stdbool.h"
+#include "project.h"
 
 struct cell_list_t
 {
@@ -24,6 +25,8 @@ cell_list_t * CELL_list_from_string(char const * string)
 {
     unsigned int cell_count = 0;
     char const * board_place = string;
+    cell_list_t * ret_val = NULL;
+
     while('\0' != *board_place)
     {
         if ('o' == *board_place)
@@ -33,31 +36,35 @@ cell_list_t * CELL_list_from_string(char const * string)
         board_place++;
     }
 
-    cell_list_t * cell_list = malloc(sizeof(cell_list_t));
-    cell_list->list = malloc(cell_count * sizeof(struct cell_t));
-    cell_list->length = cell_count;
-
-    board_place = string;
-    unsigned int x = 0;
-    unsigned int y = 0;
-    unsigned int list_offset = 0;
-    while('\0' != *board_place)
+    if (cell_count)
     {
-        if ('o' == *board_place)
+        cell_list_t * cell_list = malloc(sizeof(cell_list_t));
+        cell_list->list = malloc(cell_count * sizeof(struct cell_t));
+        cell_list->length = cell_count;
+
+        board_place = string;
+        unsigned int x = 0;
+        unsigned int y = 0;
+        unsigned int list_offset = 0;
+        while('\0' != *board_place)
         {
-            cell_list->list[list_offset] = (struct cell_t){.x = 1, .y = 1};
-            list_offset++;
+            if ('o' == *board_place)
+            {
+                cell_list->list[list_offset] = (struct cell_t){.x = 1, .y = 1};
+                list_offset++;
+            }
+            if ('\n')
+            {
+                y++;
+                x = (unsigned int)-1;
+            }
+            x++;
+            board_place++;
         }
-        else if ('\n')
-        {
-            y++;
-            x = (unsigned int)-1;
-        }
-        x++;
-        board_place++;
+        ret_val = cell_list;
     }
 
-    return cell_list;
+    return ret_val;
 }
 
 void CELL_list_dtor(cell_list_t * cell_list)
@@ -74,9 +81,12 @@ unsigned int CELL_get_list_length(cell_list_t * cell_list)
 bool CELL_pop_from_list(cell_list_t * cell_list, struct cell_t * cell)
 {
     bool ret_val = false;
-    if (0 == cell_list->length)
+    if (NULL == cell_list)
     {
-
+        UNSPECIFIED();
+    }
+    else if (0 == cell_list->length)
+    {
     }
     else
     {
@@ -114,21 +124,28 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
             }
         }
 
-        cell_list_t * underpopulated_cells = malloc(sizeof(cell_list_t));
-        underpopulated_cells->list = 
-            malloc(sizeof(struct cell_t) * underpopulated_count);
-        underpopulated_cells->length = 0;
-
-        for (unsigned int a = 0; a < cells->length; a++)
+        if (underpopulated_count)
         {
-            if (cell_is_underpopulated(cells,cells->list[a]))
+            cell_list_t * underpopulated_cells = malloc(sizeof(cell_list_t));
+            if (NULL == underpopulated_cells)
             {
-                underpopulated_cells->list[underpopulated_cells->length] 
-                    = cells->list[a];
-                underpopulated_cells->length++;
+                UNSPECIFIED();
             }
+            underpopulated_cells->list = 
+                malloc(sizeof(struct cell_t) * underpopulated_count);
+            underpopulated_cells->length = 0;
+
+            for (unsigned int a = 0; a < cells->length; a++)
+            {
+                if (cell_is_underpopulated(cells,cells->list[a]))
+                {
+                    underpopulated_cells->list[underpopulated_cells->length] 
+                        = cells->list[a];
+                    underpopulated_cells->length++;
+                }
+            }
+            ret_val = underpopulated_cells;
         }
-        ret_val = underpopulated_cells;
     }
 
     return ret_val;
@@ -205,10 +222,10 @@ static bool uints_are_close(unsigned int a, unsigned int b)
     else
     {
         greatest = a;
-        least=b;
+        least = b;
     }
 
-    if (greatest - least < 2)
+    if ((greatest - least) < 2)
     {
         ret_val = true;
     }

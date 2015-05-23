@@ -3,6 +3,7 @@
 #include "stdlib.h"
 #include "strings.h"
 #include "cell.h"
+#include "project.h"
 
 struct game_board_t
 {
@@ -53,14 +54,23 @@ void GME_iterate(struct game_board_t * board)
 {
     cell_list_t * living_cells = CELL_list_from_string(board->board_string);
     cell_list_t * dying_cells = CELL_filter_for_underpopulated(living_cells);
-    struct cell_t cell;
-    while(CELL_pop_from_list(dying_cells, &cell))
+
+    if (NULL == dying_cells)
     {
-        remove_cell_from_board(board, cell);
+        CELL_list_dtor(living_cells);
+    }
+    else
+    {
+        struct cell_t cell;
+        while(CELL_pop_from_list(dying_cells, &cell))
+        {
+            remove_cell_from_board(board, cell);
+        }
+
+        CELL_list_dtor(living_cells);
+        CELL_list_dtor(dying_cells);
     }
 
-    CELL_list_dtor(living_cells);
-    CELL_list_dtor(dying_cells);
 
 }
 

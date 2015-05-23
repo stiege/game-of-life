@@ -30,8 +30,7 @@ void test_empty_size_3_gameboard_shows_blank(void)
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         "   \n"
-        "   \n", GME_show(game_board)
-        );
+        "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
@@ -45,8 +44,7 @@ void test_empty_size_5_gameboard_shows_blank(void)
         "     \n"
         "     \n"
         "     \n"
-        "     \n", GME_show(game_board)
-        );
+        "     \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
@@ -60,8 +58,7 @@ void test_can_set_game_board(void)
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         " o \n"
-        "   \n", GME_show(game_board)
-        );
+        "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
@@ -74,8 +71,7 @@ void test_single_cell_dies(void)
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         "   \n"
-        "   \n", GME_show(game_board)
-        );
+        "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
@@ -90,14 +86,29 @@ void test_persistent_block_remains(void)
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         "oo \n"
-        "oo \n", GME_show(game_board)
-        );
+        "oo \n", GME_show(game_board));
     GME_iterate(game_board);
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
         "oo \n"
-        "oo \n", GME_show(game_board)
-        );
+        "oo \n", GME_show(game_board));
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+}
+
+void test_single_corner_is_removed(void)
+{
+    struct game_board_t * game_board = GME_init(3);
+    GME_set(game_board, (struct point_t) {.x = 0, .y = 0});
+    TEST_ASSERT_EQUAL_STRING(
+        "o  \n"
+        "   \n"
+        "   \n", GME_show(game_board));
+    GME_iterate(game_board);
+    TEST_ASSERT_EQUAL_STRING(
+        "   \n"
+        "   \n"
+        "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
