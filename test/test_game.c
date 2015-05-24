@@ -96,8 +96,9 @@ void test_persistent_block_remains(void)
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
+#endif 
 
-#endif
+
 void test_single_corner_is_removed(void)
 {
     struct game_board_t * game_board = GME_init(3);

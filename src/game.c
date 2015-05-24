@@ -55,7 +55,11 @@ void GME_iterate(struct game_board_t * board)
     cell_list_t * living_cells = CELL_list_from_string(board->board_string);
     cell_list_t * dying_cells = CELL_filter_for_underpopulated(living_cells);
 
-    if (NULL == dying_cells)
+    if (NULL == living_cells)
+    {
+        UNSPECIFIED();
+    }
+    else if (NULL == dying_cells)
     {
         CELL_list_dtor(living_cells);
     }

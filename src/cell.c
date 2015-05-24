@@ -11,7 +11,7 @@ struct cell_list_t
     unsigned int length;
 };
 
-static bool CELL_is_underpopulated(struct cell_list_t * cell_list,
+static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell);
 static unsigned int living_neighbours (
     struct cell_list_t * cell_list,
@@ -75,8 +75,11 @@ cell_list_t * CELL_list_from_string(char const * string)
 
 void CELL_list_dtor(cell_list_t * cell_list)
 {
-    free(cell_list->list);
-    free(cell_list);
+    if (NULL != cell_list)
+    {
+        free(cell_list->list);
+        free(cell_list);
+    }
 }
 
 unsigned int CELL_get_list_length(cell_list_t * cell_list)
@@ -125,7 +128,7 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
         unsigned int underpopulated_count = 0;
         for (unsigned int a = 0; a < cells->length; a++)
         {
-            if (CELL_is_underpopulated(cells,cells->list[a]))
+            if (cell_is_underpopulated(cells,cells->list[a]))
             {
                 underpopulated_count++;
             }
@@ -144,7 +147,7 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
 
             for (unsigned int a = 0; a < cells->length; a++)
             {
-                if (CELL_is_underpopulated(cells,cells->list[a]))
+                if (cell_is_underpopulated(cells,cells->list[a]))
                 {
                     underpopulated_cells->list[underpopulated_cells->length] 
                         = cells->list[a];
@@ -176,7 +179,7 @@ void CELL_remove_from_list(cell_list_t * cell_list, cell_list_t * to_remove)
 }
 #endif
 
-static bool CELL_is_underpopulated(struct cell_list_t * cell_list,
+static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell)
 {
     bool ret_val = false;

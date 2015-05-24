@@ -13,6 +13,11 @@ char const * underpopulated_in_corner_board =
 "   \n"
 "   \n";
 
+char const * block_board = 
+"oo \n"
+"oo \n"
+"   \n";
+
 const struct cell_t underpopulated_cell_from_board = {.x=1,.y=1};
 const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
 struct mstats mdata_before;
@@ -79,5 +84,14 @@ void test_returns_underpopulated_cells(void)
     CELL_list_dtor(cell_list);
     CELL_list_dtor(underpopulated_list);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+}
+
+void test_block_board_not_underpopulated(void)
+{
+    cell_list_t * cell_list = CELL_list_from_string(block_board);
+    TEST_ASSERT_NOT_NULL(cell_list);
+    cell_list_t * underpopulated_list = 
+        CELL_filter_for_underpopulated(cell_list);
+    TEST_ASSERT_NULL(underpopulated_list);
 }
 
