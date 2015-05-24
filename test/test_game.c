@@ -116,7 +116,6 @@ void test_single_corner_is_removed(void)
 
 void test_cells_are_born(void)
 {
-    printf("Born cells test\n");
     struct game_board_t * game_board = GME_init(3);
     GME_set(game_board, (struct point_t) {.x = 1, .y = 0});
     GME_set(game_board, (struct point_t) {.x = 1, .y = 1});
