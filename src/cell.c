@@ -209,7 +209,7 @@ static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b)
     bool ret_val = false;
     if (    uints_are_close(cell_a.x, cell_b.x) 
         &&  uints_are_close(cell_a.y,cell_b.y)
-        &&  !(memcmp(&cell_a, &cell_b, sizeof(struct cell_t)))
+        &&  (memcmp(&cell_a, &cell_b, sizeof(struct cell_t)))
         )
     {//close but not the same
         ret_val = true;
