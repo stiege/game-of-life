@@ -99,16 +99,17 @@ bool CELL_pop_from_list(cell_list_t * cell_list, struct cell_t * cell)
     }
     else
     {
-        *cell = cell_list->list[0];
 
-        unsigned int new_list_size = (cell_list->length - 1) 
-            * sizeof(struct cell_t);
+        unsigned int new_list_length = cell_list->length - 1;
+        unsigned int new_list_size = new_list_length * sizeof(struct cell_t);
+
         struct cell_t * new_list = malloc(new_list_size);
         memcpy(new_list, cell_list->list, new_list_size);
 
+        *cell = cell_list->list[new_list_length];
         free(cell_list->list);
         cell_list->list = new_list;
-        cell_list->length = new_list_size;
+        cell_list->length = new_list_length;
 
         ret_val = true;
     }

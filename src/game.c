@@ -74,8 +74,6 @@ void GME_iterate(struct game_board_t * board)
         CELL_list_dtor(living_cells);
         CELL_list_dtor(dying_cells);
     }
-
-
 }
 
 static void remove_cell_from_board(struct game_board_t * board,
