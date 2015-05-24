@@ -162,6 +162,11 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
     return ret_val;
 }
 
+cell_list_t * CELL_filter_for_births (cell_list_t * cells)
+{
+    return NULL;
+}
+
 static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell)
 {
