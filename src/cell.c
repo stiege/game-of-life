@@ -4,6 +4,7 @@
 #include "stdio.h"
 #include "stdbool.h"
 #include "project.h"
+#include "stdlib.h"
 
 struct cell_list_t
 {
@@ -19,6 +20,9 @@ static unsigned int living_neighbours (
 static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b);
 static bool uints_are_close(unsigned int a, unsigned int b);
 static bool list_contains(cell_list_t * list, struct cell_t cell);
+static void list_add(cell_list_t list, struct cell_t cell);
+static int cell_compare(const void * cell_a, const void * cell_b);
+static cell_list_t * find_birth_cells(cell_list_t * list);
 
 cell_list_t * CELL_list_from_string(char const * string)
 {
@@ -162,9 +166,55 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
     return ret_val;
 }
 
-cell_list_t * CELL_filter_for_births (cell_list_t * cells)
+cell_list_t * CELL_filter_for_births(cell_list_t * cells)
 {
-    return NULL;
+    cell_list_t * ret_val = NULL;
+    if (NULL == cells)
+    {
+        UNSPECIFIED();
+    }
+    else
+    {
+        cell_list_t big_list;
+        big_list.length = cells->length * 8;
+        big_list.list = malloc(sizeof(struct cell_t) * big_list.length);
+        big_list.length = 0;
+        for (unsigned int i = 0; i < cells->length; ++i)
+        {
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x-1,
+                    .y=cells->list[i].y-1});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x,
+                    .y=cells->list[i].y-1});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x+1,
+                    .y=cells->list[i].y-1});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x-1,
+                    .y=cells->list[i].y});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x+1,
+                    .y=cells->list[i].y});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x-1,
+                    .y=cells->list[i].y+1});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x,
+                    .y=cells->list[i].y-1});
+            list_add(big_list, (struct cell_t)
+                {   .x=cells->list[i].x+1,
+                    .y=cells->list[i].y-1});
+        }
+        free(big_list.list);
+        qsort(big_list.list,
+            big_list.length,
+            sizeof(struct cell_t),
+            cell_compare);
+        ret_val = find_birth_cells(&big_list);
+    }
+
+    return ret_val;
 }
 
 static bool cell_is_underpopulated(struct cell_list_t * cell_list,
@@ -229,4 +279,32 @@ static bool uints_are_close(unsigned int a, unsigned int b)
     }
 
     return ret_val;
+}
+
+static void list_add(cell_list_t list, struct cell_t cell)
+{
+    list.list[list.length++] = cell;
+}
+
+static int cell_compare(const void * _cell_a, const void * _cell_b)
+{
+    int ret_val = 0;
+    struct cell_t const * cell_b = _cell_b;
+    struct cell_t const * cell_a = _cell_a;
+
+    if (0 != (cell_a->y - cell_b->y))
+    {
+        ret_val = (cell_a->y - cell_b->y);
+    }
+    else
+    {
+        ret_val = (cell_a->x - cell_b->x);
+    }
+
+    return ret_val;
+}
+
+static cell_list_t * find_birth_cells(cell_list_t * list)
+{
+    return NULL;
 }
