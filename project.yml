@@ -70,6 +70,7 @@
       - -D"$": DEFINES_TEST_PREPROCESS
       - -Wall -Wextra -Werror -Wpedantic
       - -w
+      - -g
       - ${1}
 
 :plugins:
