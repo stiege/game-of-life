@@ -4,14 +4,14 @@
 #include "malloc/malloc.h"
 
 char const * underpopulated_board = 
-"   "
-" o "
-"   ";
+"   \n"
+" o \n"
+"   \n";
 
 char const * underpopulated_in_corner_board = 
-"o  "
-"   "
-"   ";
+"o  \n"
+"   \n"
+"   \n";
 
 const struct cell_t underpopulated_cell_from_board = {.x=1,.y=1};
 const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
@@ -65,6 +65,7 @@ void test_returns_cell_from_upper_left_corner(void)
 void test_returns_underpopulated_cells(void)
 {
     cell_list_t * cell_list = CELL_list_from_string(underpopulated_board);
+    TEST_ASSERT_NOT_NULL(cell_list);
     cell_list_t * underpopulated_list = 
         CELL_filter_for_underpopulated(cell_list);
     TEST_ASSERT_NOT_NULL(underpopulated_list);
