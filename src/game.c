@@ -13,6 +13,8 @@ struct game_board_t
 
 static void remove_cell_from_board(struct game_board_t * board,
     struct cell_t cell);
+static void add_cell_to_board(struct game_board_t * board,
+    struct cell_t cell);
 
 struct game_board_t * GME_init(unsigned int _size)
 {
@@ -54,6 +56,7 @@ void GME_iterate(struct game_board_t * board)
 {
     cell_list_t * living_cells = CELL_list_from_string(board->board_string);
     cell_list_t * dying_cells = CELL_filter_for_underpopulated(living_cells);
+    // cell_list_t * birth_cells = CELL_filter_for_births(living_cells);
 
     if (NULL == living_cells)
     {
@@ -66,7 +69,12 @@ void GME_iterate(struct game_board_t * board)
     else
     {
         struct cell_t cell;
-        while(CELL_pop_from_list(dying_cells, &cell))
+
+        // while (CELL_pop_from_list(birth_cells, &cell))
+        // {
+        //     add_cell_to_board(board,cell);
+        // }
+        while (CELL_pop_from_list(dying_cells, &cell))
         {
             remove_cell_from_board(board, cell);
         }
@@ -80,4 +88,10 @@ static void remove_cell_from_board(struct game_board_t * board,
     struct cell_t cell)
 {
     board->board_string[cell.y * (board->size + 1) + cell.x] = ' ';
+}
+
+static void add_cell_to_board(struct game_board_t * board,
+    struct cell_t cell)
+{
+    board->board_string[cell.y * (board->size + 1) + cell.x] = 'o';
 }

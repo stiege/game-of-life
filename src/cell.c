@@ -20,7 +20,7 @@ static unsigned int living_neighbours (
 static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b);
 static bool uints_are_close(unsigned int a, unsigned int b);
 static bool list_contains(cell_list_t * list, struct cell_t cell);
-static void list_add(cell_list_t list, struct cell_t cell);
+static void list_add(cell_list_t * list, struct cell_t cell);
 static int cell_compare(const void * cell_a, const void * cell_b);
 static cell_list_t * find_birth_cells(cell_list_t * list);
 
@@ -181,37 +181,37 @@ cell_list_t * CELL_filter_for_births(cell_list_t * cells)
         big_list.length = 0;
         for (unsigned int i = 0; i < cells->length; ++i)
         {
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y-1});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x,
                     .y=cells->list[i].y-1});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y-1});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y+1});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x,
                     .y=cells->list[i].y-1});
-            list_add(big_list, (struct cell_t)
+            list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y-1});
         }
-        free(big_list.list);
         qsort(big_list.list,
             big_list.length,
             sizeof(struct cell_t),
             cell_compare);
         ret_val = find_birth_cells(&big_list);
+        free(big_list.list);
     }
 
     return ret_val;
@@ -281,9 +281,9 @@ static bool uints_are_close(unsigned int a, unsigned int b)
     return ret_val;
 }
 
-static void list_add(cell_list_t list, struct cell_t cell)
+static void list_add(cell_list_t * list, struct cell_t cell)
 {
-    list.list[list.length++] = cell;
+    list->list[list->length++] = cell;
 }
 
 static int cell_compare(const void * _cell_a, const void * _cell_b)
@@ -306,5 +306,50 @@ static int cell_compare(const void * _cell_a, const void * _cell_b)
 
 static cell_list_t * find_birth_cells(cell_list_t * list)
 {
-    return NULL;
+    cell_list_t * ret_val = NULL;
+    unsigned int birth_cells = 0;
+    for (unsigned int i = 0; i < list->length; ++i)
+    {
+        struct cell_t current_cell = list->list[i];
+        unsigned int matching_cells = 0;
+        while (!memcmp(
+            &list->list[i + matching_cells], 
+            &current_cell, 
+            sizeof(struct cell_t)))
+        {
+            matching_cells++;
+        }
+
+        if (matching_cells > 2)
+        {
+            birth_cells++;
+        }
+    }
+
+    if (0 < birth_cells)
+    {
+        cell_list_t * birth_list = malloc(sizeof(cell_list_t));
+        birth_list->length = 0;
+        birth_list->list = malloc(sizeof(struct cell_t) * birth_cells);
+        for (unsigned int i = 0; i < list->length; ++i)
+        {
+            struct cell_t current_cell = list->list[i];
+            unsigned int matching_cells = 0;
+            while (!memcmp(
+                &list->list[i + matching_cells], 
+                &current_cell, 
+                sizeof(struct cell_t)))
+            {
+                matching_cells++;
+            }
+
+            if (matching_cells > 2)
+            {
+                birth_list->list[birth_list->length++]=current_cell;
+            }
+        }
+        ret_val = birth_list;
+    }
+
+    return ret_val;
 }
