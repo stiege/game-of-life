@@ -12,6 +12,12 @@ struct cell_list_t
     unsigned int length;
 };
 
+const struct cell_list_t null_list = 
+{
+    .list = NULL,
+    .length = 0
+};
+
 static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell);
 static unsigned int living_neighbours (
@@ -79,7 +85,8 @@ cell_list_t * CELL_list_from_string(char const * string)
 
 void CELL_list_dtor(cell_list_t * cell_list)
 {
-    if (NULL != cell_list)
+    if ((NULL != cell_list)
+        && (&null_list != cell_list))
     {
         free(cell_list);
         if (NULL != cell_list->list)
@@ -127,7 +134,7 @@ bool CELL_pop_from_list(cell_list_t * cell_list, struct cell_t * cell)
 
 cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
 {
-    cell_list_t * ret_val = NULL;
+    cell_list_t * ret_val = (cell_list_t *)&null_list;
     if (NULL == cells)
     {
 
@@ -172,7 +179,7 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
 
 cell_list_t * CELL_filter_for_births(cell_list_t * cells)
 {
-    cell_list_t * ret_val = NULL;
+    cell_list_t * ret_val = (cell_list_t *)&null_list;
     if (NULL == cells)
     {
         UNSPECIFIED();
@@ -310,7 +317,7 @@ static int cell_compare(const void * _cell_a, const void * _cell_b)
 
 static cell_list_t * find_birth_cells(cell_list_t * list)
 {
-    cell_list_t * ret_val = NULL;
+    cell_list_t * ret_val = (cell_list_t *)&null_list;
     unsigned int birth_cells = 0;
     for (unsigned int i = 0; i < list->length; ++i)
     {
