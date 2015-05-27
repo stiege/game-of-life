@@ -56,7 +56,7 @@ void GME_iterate(struct game_board_t * board)
 {
     cell_list_t * living_cells = CELL_list_from_string(board->board_string);
     cell_list_t * dying_cells = CELL_filter_for_underpopulated(living_cells);
-    // cell_list_t * birth_cells = CELL_filter_for_births(living_cells);
+    cell_list_t * birth_cells = CELL_filter_for_births(living_cells);
 
     if (NULL == living_cells)
     {
@@ -70,16 +70,16 @@ void GME_iterate(struct game_board_t * board)
     {
         struct cell_t cell;
 
-        // while (CELL_pop_from_list(birth_cells, &cell))
-        // {
-        //     add_cell_to_board(board,cell);
-        // }
+        while (CELL_pop_from_list(birth_cells, &cell))
+        {
+            add_cell_to_board(board,cell);
+        }
         while (CELL_pop_from_list(dying_cells, &cell))
         {
             remove_cell_from_board(board, cell);
         }
 
-        // CELL_list_dtor(birth_cells);
+        CELL_list_dtor(birth_cells);
         CELL_list_dtor(living_cells);
         CELL_list_dtor(dying_cells);
     }
