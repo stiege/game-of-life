@@ -81,8 +81,12 @@ void CELL_list_dtor(cell_list_t * cell_list)
 {
     if (NULL != cell_list)
     {
-        free(cell_list->list);
         free(cell_list);
+        if (NULL != cell_list->list)
+        {
+            free(cell_list->list);
+        }
+
     }
 }
 
@@ -177,7 +181,7 @@ cell_list_t * CELL_filter_for_births(cell_list_t * cells)
     {
         cell_list_t big_list;
         big_list.length = cells->length * 8;
-        big_list.list = malloc(sizeof(struct cell_t) * big_list.length);
+        big_list.list = malloc(sizeof(struct cell_t) * big_list.length * 8);
         big_list.length = 0;
         for (unsigned int i = 0; i < cells->length; ++i)
         {
@@ -201,10 +205,10 @@ cell_list_t * CELL_filter_for_births(cell_list_t * cells)
                     .y=cells->list[i].y+1});
             list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x,
-                    .y=cells->list[i].y-1});
+                    .y=cells->list[i].y+1});
             list_add(&big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
-                    .y=cells->list[i].y-1});
+                    .y=cells->list[i].y+1});
         }
         qsort(big_list.list,
             big_list.length,
@@ -312,18 +316,22 @@ static cell_list_t * find_birth_cells(cell_list_t * list)
     {
         struct cell_t current_cell = list->list[i];
         unsigned int matching_cells = 0;
-        while (!memcmp(
-            &list->list[i + matching_cells], 
+        while (
+            (!memcmp(
+            &list->list[i + matching_cells + 1], 
             &current_cell, 
             sizeof(struct cell_t)))
+            && ((i+matching_cells) < list->length))
         {
             matching_cells++;
         }
 
-        if (matching_cells > 2)
+        if (matching_cells == 2)
         {
             birth_cells++;
         }
+
+        i += matching_cells;
     }
 
     if (0 < birth_cells)
@@ -335,18 +343,25 @@ static cell_list_t * find_birth_cells(cell_list_t * list)
         {
             struct cell_t current_cell = list->list[i];
             unsigned int matching_cells = 0;
-            while (!memcmp(
-                &list->list[i + matching_cells], 
-                &current_cell, 
+            while (
+                (!memcmp(
+                &list->list[i + matching_cells + 1], 
+                &list->list[i], 
                 sizeof(struct cell_t)))
-            {
+                && ((i+matching_cells) < list->length))
+            {//Same cell
+                struct cell_t error_cell = {.x=0,.y=2};
                 matching_cells++;
             }
 
-            if (matching_cells > 2)
+            if (matching_cells == 2)
             {
-                birth_list->list[birth_list->length++]=current_cell;
+                birth_list->list[birth_list->length]=current_cell;
+                birth_list->length += 1;
+
             }
+
+            i += matching_cells;
         }
         ret_val = birth_list;
     }

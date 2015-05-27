@@ -79,6 +79,7 @@ void GME_iterate(struct game_board_t * board)
             remove_cell_from_board(board, cell);
         }
 
+        // CELL_list_dtor(birth_cells);
         CELL_list_dtor(living_cells);
         CELL_list_dtor(dying_cells);
     }
@@ -87,11 +88,21 @@ void GME_iterate(struct game_board_t * board)
 static void remove_cell_from_board(struct game_board_t * board,
     struct cell_t cell)
 {
-    board->board_string[cell.y * (board->size + 1) + cell.x] = ' ';
+    char * board_cell = 
+        &board->board_string[cell.y * (board->size + 1) + cell.x];
+    if ('o' == *board_cell)
+    {
+        *board_cell = ' ';
+    }
 }
 
 static void add_cell_to_board(struct game_board_t * board,
     struct cell_t cell)
 {
-    board->board_string[cell.y * (board->size + 1) + cell.x] = 'o';
+    char * board_cell = 
+        &board->board_string[cell.y * (board->size + 1) + cell.x];
+    if (' ' == *board_cell)
+    {
+        *board_cell = 'o';
+    }
 }

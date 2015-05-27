@@ -132,3 +132,22 @@ void test_cells_are_born(void)
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
+
+void test_cells_are_born_2(void)
+{
+    struct game_board_t * game_board = GME_init(3);
+    GME_set(game_board, (struct point_t) {.x = 0, .y = 1});
+    GME_set(game_board, (struct point_t) {.x = 1, .y = 1});
+    GME_set(game_board, (struct point_t) {.x = 2, .y = 1});
+    TEST_ASSERT_EQUAL_STRING(
+        "   \n"
+        "ooo\n"
+        "   \n", GME_show(game_board));
+    GME_iterate(game_board);
+    TEST_ASSERT_EQUAL_STRING(
+        " o \n"
+        "   \n"
+        " o \n", GME_show(game_board));
+    GME_game_board_dtor(game_board);
+    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+}

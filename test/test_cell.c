@@ -98,6 +98,9 @@ void test_block_board_not_underpopulated(void)
     cell_list_t * underpopulated_list = 
         CELL_filter_for_underpopulated(cell_list);
     TEST_ASSERT_NULL(underpopulated_list);
+    CELL_list_dtor(cell_list);
+    CELL_list_dtor(underpopulated_list);
+
 }
 
 void test_can_find_cells_being_born(void)
@@ -111,5 +114,7 @@ void test_can_find_cells_being_born(void)
     TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
     TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
     TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
+    CELL_list_dtor(cell_list);
+    CELL_list_dtor(birth_list);
 
 }
