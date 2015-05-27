@@ -232,7 +232,7 @@ static bool cell_is_underpopulated(struct cell_list_t * cell_list,
     struct cell_t cell)
 {
     bool ret_val = false;
-    if (3 > living_neighbours(cell_list,cell))
+    if (2 > living_neighbours(cell_list,cell))
     {
         ret_val = true;
     }

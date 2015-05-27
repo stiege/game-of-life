@@ -60,13 +60,13 @@ void GME_iterate(struct game_board_t * board)
 
     struct cell_t cell;
 
-    while (CELL_pop_from_list(birth_cells, &cell))
-    {
-        add_cell_to_board(board,cell);
-    }
     while (CELL_pop_from_list(dying_cells, &cell))
     {
         remove_cell_from_board(board, cell);
+    }
+    while (CELL_pop_from_list(birth_cells, &cell))
+    {
+        add_cell_to_board(board,cell);
     }
 
     CELL_list_dtor(birth_cells);

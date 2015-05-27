@@ -127,7 +127,7 @@ void test_cells_are_born(void)
     GME_iterate(game_board);
     TEST_ASSERT_EQUAL_STRING(
         "   \n"
-        "o o\n"
+        "ooo\n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
@@ -146,7 +146,7 @@ void test_cells_are_born_2(void)
     GME_iterate(game_board);
     TEST_ASSERT_EQUAL_STRING(
         " o \n"
-        "   \n"
+        " o \n"
         " o \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
