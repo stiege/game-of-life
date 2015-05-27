@@ -14,6 +14,7 @@ int main(int argc, char const *argv[])
 
     while(true) 
     {
+        system("clear");
         printf("%s", GME_show(board));
         GME_iterate(board);
         sleep(1);
