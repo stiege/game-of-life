@@ -32,6 +32,7 @@ static cell_list_t * find_birth_cells(cell_list_t * list);
 static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated);
 static void get_repeated(cell_list_t * birth_list, cell_list_t * list,
     unsigned int n_repeated);
+static cell_list_t * cell_list_ctor(unsigned int length);
 
 cell_list_t * CELL_list_from_string(char const * string)
 {
@@ -50,9 +51,7 @@ cell_list_t * CELL_list_from_string(char const * string)
 
     if (cell_count)
     {
-        cell_list_t * cell_list = malloc(sizeof(cell_list_t));
-        cell_list->list = malloc(cell_count * sizeof(struct cell_t));
-        cell_list->length = cell_count;
+        cell_list_t * cell_list = cell_list_ctor(cell_count);
 
         board_place = string;
         unsigned int x = 0;
@@ -155,13 +154,8 @@ cell_list_t * CELL_filter_for_underpopulated(cell_list_t * cells)
 
         if (underpopulated_count)
         {
-            cell_list_t * underpopulated_cells = malloc(sizeof(cell_list_t));
-            if (NULL == underpopulated_cells)
-            {
-                UNSPECIFIED();
-            }
-            underpopulated_cells->list = 
-                malloc(sizeof(struct cell_t) * underpopulated_count);
+            cell_list_t * underpopulated_cells = 
+                cell_list_ctor(underpopulated_count);
             underpopulated_cells->length = 0;
 
             for (unsigned int a = 0; a < cells->length; a++)
@@ -189,43 +183,41 @@ cell_list_t * CELL_filter_for_births(cell_list_t * cells)
     }
     else
     {
-        cell_list_t big_list;
-        big_list.length = cells->length * 8;
-        big_list.list = malloc(sizeof(struct cell_t) * big_list.length * 8);
-        big_list.length = 0;
+        cell_list_t * big_list = cell_list_ctor(cells->length * 8);
+        big_list->length = 0;
         for (unsigned int i = 0; i < cells->length; ++i)
         {
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y-1});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x,
                     .y=cells->list[i].y-1});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y-1});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x-1,
                     .y=cells->list[i].y+1});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x,
                     .y=cells->list[i].y+1});
-            list_add(&big_list, (struct cell_t)
+            list_add(big_list, (struct cell_t)
                 {   .x=cells->list[i].x+1,
                     .y=cells->list[i].y+1});
         }
-        qsort(big_list.list,
-            big_list.length,
+        qsort(big_list->list,
+            big_list->length,
             sizeof(struct cell_t),
             cell_compare);
-        ret_val = find_birth_cells(&big_list);
-        free(big_list.list);
+        ret_val = find_birth_cells(big_list);
+        CELL_list_dtor(big_list);
     }
 
     return ret_val;
@@ -300,6 +292,14 @@ static void list_add(cell_list_t * list, struct cell_t cell)
     list->list[list->length++] = cell;
 }
 
+static cell_list_t * cell_list_ctor(unsigned int length)
+{
+    cell_list_t * list = malloc(sizeof(cell_list_t));
+    list->list = malloc(sizeof(struct cell_t) * length);
+    list->length = length;
+    return list;
+}
+
 static int cell_compare(const void * _cell_a, const void * _cell_b)
 {
     int ret_val = 0;
@@ -325,9 +325,8 @@ static cell_list_t * find_birth_cells(cell_list_t * list)
 
     if (0 < birth_cells)
     {
-        cell_list_t * birth_list = malloc(sizeof(cell_list_t));
+        cell_list_t * birth_list = cell_list_ctor(birth_cells);
         birth_list->length = 0;
-        birth_list->list = malloc(sizeof(struct cell_t) * birth_cells);
         get_repeated(birth_list, list, 3);
         ret_val = birth_list;
     }
