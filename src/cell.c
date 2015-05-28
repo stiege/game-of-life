@@ -30,6 +30,8 @@ static void list_add(cell_list_t * list, struct cell_t cell);
 static int cell_compare(const void * cell_a, const void * cell_b);
 static cell_list_t * find_birth_cells(cell_list_t * list);
 static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated);
+static void get_repeated(cell_list_t * birth_list, cell_list_t * list,
+    unsigned int n_repeated);
 
 cell_list_t * CELL_list_from_string(char const * string)
 {
@@ -326,30 +328,7 @@ static cell_list_t * find_birth_cells(cell_list_t * list)
         cell_list_t * birth_list = malloc(sizeof(cell_list_t));
         birth_list->length = 0;
         birth_list->list = malloc(sizeof(struct cell_t) * birth_cells);
-        for (unsigned int i = 0; i < list->length; ++i)
-        {
-            struct cell_t current_cell = list->list[i];
-            unsigned int matching_cells = 0;
-            while (
-                (!memcmp(
-                &list->list[i + matching_cells + 1], 
-                &list->list[i], 
-                sizeof(struct cell_t)))
-                && ((i+matching_cells) < list->length))
-            {//Same cell
-                struct cell_t error_cell = {.x=0,.y=2};
-                matching_cells++;
-            }
-
-            if (matching_cells == 2)
-            {
-                birth_list->list[birth_list->length]=current_cell;
-                birth_list->length += 1;
-
-            }
-
-            i += matching_cells;
-        }
+        get_repeated(birth_list, list, 3);
         ret_val = birth_list;
     }
 
@@ -381,4 +360,33 @@ static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated)
         i += matching_cells;
     }
     return birth_cells;
+}
+
+static void get_repeated(cell_list_t * birth_list, cell_list_t * list,
+    unsigned int n_repeated)
+{
+    for (unsigned int i = 0; i < list->length; ++i)
+    {
+        struct cell_t current_cell = list->list[i];
+        unsigned int matching_cells = 0;
+        while (
+            (!memcmp(
+            &list->list[i + matching_cells + 1], 
+            &list->list[i], 
+            sizeof(struct cell_t)))
+            && ((i+matching_cells) < list->length))
+        {//Same cell
+            struct cell_t error_cell = {.x=0,.y=2};
+            matching_cells++;
+        }
+
+        if (matching_cells == (n_repeated-1))
+        {
+            birth_list->list[birth_list->length]=current_cell;
+            birth_list->length += 1;
+
+        }
+
+        i += matching_cells;
+    }
 }
