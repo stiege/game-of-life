@@ -29,6 +29,7 @@ static bool list_contains(cell_list_t * list, struct cell_t cell);
 static void list_add(cell_list_t * list, struct cell_t cell);
 static int cell_compare(const void * cell_a, const void * cell_b);
 static cell_list_t * find_birth_cells(cell_list_t * list);
+static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated);
 
 cell_list_t * CELL_list_from_string(char const * string)
 {
@@ -318,28 +319,7 @@ static int cell_compare(const void * _cell_a, const void * _cell_b)
 static cell_list_t * find_birth_cells(cell_list_t * list)
 {
     cell_list_t * ret_val = (cell_list_t *)&null_list;
-    unsigned int birth_cells = 0;
-    for (unsigned int i = 0; i < list->length; ++i)
-    {
-        struct cell_t current_cell = list->list[i];
-        unsigned int matching_cells = 0;
-        while (
-            (!memcmp(
-            &list->list[i + matching_cells + 1], 
-            &current_cell, 
-            sizeof(struct cell_t)))
-            && ((i+matching_cells) < list->length))
-        {
-            matching_cells++;
-        }
-
-        if (matching_cells == 2)
-        {
-            birth_cells++;
-        }
-
-        i += matching_cells;
-    }
+    unsigned int birth_cells = count_repeated(list, 3);
 
     if (0 < birth_cells)
     {
@@ -374,4 +354,31 @@ static cell_list_t * find_birth_cells(cell_list_t * list)
     }
 
     return ret_val;
+}
+
+static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated)
+{
+    unsigned int birth_cells = 0;
+    for (unsigned int i = 0; i < list->length; ++i)
+    {
+        unsigned int matching_cells = 0;
+        struct cell_t current_cell = list->list[i];
+        while (
+            (!memcmp(
+            &list->list[i + matching_cells + 1], 
+            &list->list[i], 
+            sizeof(struct cell_t)))
+            && ((i+matching_cells) < list->length))
+        {
+            matching_cells++;
+        }
+
+        if (matching_cells == (n_repeated - 1))
+        {
+            birth_cells++;
+        }
+
+        i += matching_cells;
+    }
+    return birth_cells;
 }
