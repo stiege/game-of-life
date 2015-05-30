@@ -264,22 +264,9 @@ static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b)
 
 static bool uints_are_close(unsigned int a, unsigned int b)
 {
-    unsigned int greatest = 0;
-    unsigned int least = 0;
     bool ret_val = false;
-
-    if (a <= b)
-    {
-        greatest = b;
-        least = a;
-    }
-    else
-    {
-        greatest = a;
-        least = b;
-    }
-
-    if ((greatest - least) < 2)
+    unsigned int difference = abs((int)((long)a - (long)b));
+    if (difference < 2)
     {
         ret_val = true;
     }
