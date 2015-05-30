@@ -5,6 +5,7 @@
 #include "stdbool.h"
 #include "project.h"
 #include "stdlib.h"
+#include "list.h"
 
 struct cell_list_t
 {
@@ -25,7 +26,6 @@ static unsigned int living_neighbours (
     struct cell_t cell);
 static bool cells_are_close(struct cell_t cell_a, struct cell_t cell_b);
 static bool uints_are_close(unsigned int a, unsigned int b);
-static bool list_contains(cell_list_t * list, struct cell_t cell);
 static void list_add(cell_list_t * list, struct cell_t cell);
 static int cell_compare(const void * cell_a, const void * cell_b);
 static cell_list_t * find_birth_cells(cell_list_t * list);
@@ -33,6 +33,15 @@ static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated);
 static void get_repeated(cell_list_t * birth_list, cell_list_t * list,
     unsigned int n_repeated);
 static cell_list_t * cell_list_ctor(unsigned int length);
+
+/*Not to be modified, "const" but assigned at runtime*/
+static struct list_interface_t * list_interface;
+
+void CELL_init(void)
+{
+    list_interface = (struct list_interface_t *)LIST_factory_ctor(
+        sizeof(struct cell_t));
+}
 
 cell_list_t * CELL_list_from_string(char const * string)
 {

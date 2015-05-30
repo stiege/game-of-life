@@ -1,4 +1,5 @@
 #include "unity.h"
+#include "list.h"
 #include "cell.h"
 #include "stdbool.h"
 #include "malloc/malloc.h"
@@ -30,6 +31,7 @@ struct mstats mdata_before;
 void setUp(void)
 {
     mdata_before = mstats();
+    CELL_init();
 }
 
 void tearDown(void)

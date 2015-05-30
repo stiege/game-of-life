@@ -3,6 +3,7 @@
 #include "cell.h"
 #include "stdlib.h"
 #include "malloc/malloc.h"
+#include "list.h"
 
 
 struct mstats mdata_before;
