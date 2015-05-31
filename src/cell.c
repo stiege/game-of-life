@@ -39,10 +39,13 @@ static struct list_interface_t * list_interface;
 
 void CELL_init(void)
 {
-#if 0
     list_interface = (struct list_interface_t *)LIST_factory_ctor(
         sizeof(struct cell_t));
-#endif 
+}
+
+void CELL_deinit(void)
+{
+    free(list_interface);
 }
 
 cell_list_t * CELL_list_from_string(char const * string)

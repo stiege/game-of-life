@@ -18,6 +18,7 @@ unsigned int CELL_get_list_length (cell_list_t * cell_list);
 bool CELL_pop_from_list (cell_list_t * cell_list, struct cell_t * cell);
 void CELL_list_dtor (cell_list_t * cell_list);
 void CELL_init(void);
+void CELL_deinit(void);
 
 
 

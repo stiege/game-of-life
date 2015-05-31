@@ -28,14 +28,21 @@ const struct cell_t underpopulated_cell_from_board = {.x=1,.y=1};
 const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
 struct mstats mdata_before;
 
+static bool mem_leak_workaround;
+
 void setUp(void)
 {
+    mem_leak_workaround = false;
     mdata_before = mstats();
     CELL_init();
 }
 
 void tearDown(void)
 {
+    if(!mem_leak_workaround)
+    {
+        TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+    }
 }
 
 
@@ -43,6 +50,7 @@ void tearDown(void)
 //running this test first allows the next to pass
 void test_memory_leak()
 {
+    mem_leak_workaround = true;
     cell_list_t * cell_list = CELL_list_from_string(underpopulated_board);
     CELL_list_dtor(cell_list);
 }
@@ -56,6 +64,7 @@ void test_returns_cells_from_string(void)
     TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
 
     CELL_list_dtor(cell_list);
+    CELL_deinit();
     TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
@@ -72,6 +81,7 @@ void test_returns_cell_from_upper_left_corner(void)
         sizeof(struct cell_t));
 
     CELL_list_dtor(cell_list);
+    CELL_deinit();
 }
 
 void test_returns_underpopulated_cells(void)
@@ -90,7 +100,7 @@ void test_returns_underpopulated_cells(void)
 
     CELL_list_dtor(cell_list);
     CELL_list_dtor(underpopulated_list);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+    CELL_deinit();
 }
 
 void test_block_board_not_underpopulated(void)
@@ -103,6 +113,7 @@ void test_block_board_not_underpopulated(void)
     TEST_ASSERT_FALSE(CELL_pop_from_list(underpopulated_list, &returned_cell));
     CELL_list_dtor(cell_list);
     CELL_list_dtor(underpopulated_list);
+    CELL_deinit();
 
 }
 
@@ -119,5 +130,6 @@ void test_can_find_cells_being_born(void)
     TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
     CELL_list_dtor(cell_list);
     CELL_list_dtor(birth_list);
+    CELL_deinit();
 
 }
