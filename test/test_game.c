@@ -7,20 +7,27 @@
 
 
 struct mstats mdata_before;
+static bool mem_leak_workaround;
 
 void setUp(void)
 {
+    mem_leak_workaround = false;
     mdata_before = mstats();
 }
 
 void tearDown(void)
 {
+    if(!mem_leak_workaround)
+    {
+        TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+    }
 }
 
 //This test is run first and results in the appearance of a memory leak
 //leak could be due to unity as no other tests have this leak.
 void test_memory_leak(void)
 {
+    mem_leak_workaround = true;
     struct game_board_t * game_board = GME_init(3);
     GME_game_board_dtor(game_board);
 }
@@ -33,7 +40,6 @@ void test_empty_size_3_gameboard_shows_blank(void)
         "   \n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 
@@ -47,7 +53,6 @@ void test_empty_size_5_gameboard_shows_blank(void)
         "     \n"
         "     \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_can_set_game_board(void)
@@ -61,7 +66,6 @@ void test_can_set_game_board(void)
         " o \n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_single_cell_dies(void)
@@ -74,7 +78,6 @@ void test_single_cell_dies(void)
         "   \n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 
@@ -95,7 +98,6 @@ void test_persistent_block_remains(void)
         "oo \n"
         "oo \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_single_corner_is_removed(void)
@@ -112,7 +114,6 @@ void test_single_corner_is_removed(void)
         "   \n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_cells_are_born(void)
@@ -131,7 +132,6 @@ void test_cells_are_born(void)
         "ooo\n"
         "   \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
 
 void test_cells_are_born_2(void)
@@ -150,5 +150,4 @@ void test_cells_are_born_2(void)
         " o \n"
         " o \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
-    TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
 }
