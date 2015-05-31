@@ -118,6 +118,7 @@ static void LIST_pop(list_t * list, void * element)
         memcpy(new_data, list->data, new_length * list->element_size);
         free(list->data);
         list->data = new_data;
+        list->length = new_length;
     }
 }
 

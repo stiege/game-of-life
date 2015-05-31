@@ -23,13 +23,23 @@ void tearDown(void)
 
 void test_can_add_and_pop(void)
 {
+    /*LIFO list*/
     list_t * test_list = list_interface->ctor(list_interface,0);
+
     struct test_t first_element = {.a=3,.b=4};
+    struct test_t second_element = {.a=12,.b=24};
     list_interface->add(test_list, &first_element);
+    list_interface->add(test_list, &second_element);
 
-    struct test_t received;
-    list_interface->pop(test_list, &received);
+    struct test_t received_first;
+    struct test_t received_second;
+    list_interface->pop(test_list, &received_first);
+    list_interface->pop(test_list, &received_second);
 
-    TEST_ASSERT_EQUAL_MEMORY(&first_element, &received, sizeof(struct test_t));
+    TEST_ASSERT_EQUAL_MEMORY(&second_element, &received_first,
+        sizeof(struct test_t));
+    TEST_ASSERT_EQUAL_MEMORY(&first_element, &received_second,
+        sizeof(struct test_t));
+
     list_interface->dtor(test_list);
 }
