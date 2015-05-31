@@ -12,18 +12,16 @@ struct list_t
 };
 
 
-static list_t * LIST_ctor(struct list_interface_t * interface,
+static list_t * LIST_ctor (struct list_interface_t * interface,
     unsigned int length);
-static void LIST_dtor(list_t * list);
-static unsigned int LIST_get_length(list_t * list);
-static void LIST_add(list_t * list, void * element);
-static void list_copy(list_t * destination, list_t const * const source);
-static unsigned int LIST_get_size(struct list_interface_t * list);
-static void LIST_pop(list_t * list, void * element);
+static void LIST_dtor (list_t * list);
+static unsigned int LIST_get_length (list_t * list);
+static void LIST_add (list_t * list, void * element);
+static void list_copy (list_t * destination, list_t const * const source);
+static unsigned int LIST_get_size (struct list_interface_t * list);
+static void LIST_pop (list_t * list, void * element);
 static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
-static void interface_copy(struct list_interface_t * destination,
-    struct list_interface_t const * const source);
 
 static struct list_t null_list =
 {
@@ -99,12 +97,6 @@ static void LIST_add(list_t * list, void * element)
     }
 }
 
-static void interface_copy(struct list_interface_t * destination,
-    struct list_interface_t const * const source)
-{
-    list_copy((struct list_t *)destination, (struct list_t *)source);
-}
-
 static void list_copy(struct list_t * destination, list_t const * const source)
 {
     memcpy( destination,
@@ -127,7 +119,6 @@ static void LIST_pop(list_t * list, void * element)
         free(list->data);
         list->data = new_data;
     }
-    return;
 }
 
 static struct list_t * new_list(void)
