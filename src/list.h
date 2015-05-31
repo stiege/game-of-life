@@ -5,10 +5,12 @@ typedef struct list_t list_t;
 
 struct list_interface_t
 {
-    list_t * (* ctor)(unsigned int length);
+    list_t * (* ctor)(struct list_interface_t * interface,
+        unsigned int length);
     void (* dtor)(list_t * list);
     unsigned int (* get_length)(list_t * list);
-    void (* add_element)(list_t * list, void * element);
+    void (* add)(list_t * list, void * element);
+    void (* pop)(list_t * list, void * element);
 };
 
 /*
