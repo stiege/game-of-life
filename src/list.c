@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 #include "stdio.h"
+#include "stdbool.h"
 
 struct list_t
 {
@@ -19,7 +20,7 @@ static unsigned int LIST_get_length (list_t * list);
 static void LIST_add (list_t * list, void * element);
 static void list_copy (list_t * destination, list_t const * const source);
 static unsigned int LIST_get_size (struct list_interface_t * list);
-static void LIST_pop (list_t * list, void * element);
+static bool LIST_pop (list_t * list, void * element);
 static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
 
@@ -104,22 +105,28 @@ static void list_copy(struct list_t * destination, list_t const * const source)
             sizeof(struct list_t));
 }
 
-static void LIST_pop(list_t * list, void * element)
+static bool LIST_pop(list_t * list, void * element)
 {
+    bool ret_val = false;
     if (    (NULL != list)
         &&  (NULL != element))
     {
-        unsigned int new_length = list->length - 1; 
-        char * new_data = malloc(new_length * list->element_size);
-        char * last_element =
-            &list->data[new_length * list->element_size];
+        if (list->length > 0)
+        {
+            ret_val = true;
+            unsigned int new_length = list->length - 1; 
+            char * new_data = malloc(new_length * list->element_size);
+            char * last_element =
+                &list->data[new_length * list->element_size];
 
-        memcpy(element, last_element, list->element_size);
-        memcpy(new_data, list->data, new_length * list->element_size);
-        free(list->data);
-        list->data = new_data;
-        list->length = new_length;
+            memcpy(element, last_element, list->element_size);
+            memcpy(new_data, list->data, new_length * list->element_size);
+            free(list->data);
+            list->data = new_data;
+            list->length = new_length;
+        }
     }
+    return ret_val;
 }
 
 static struct list_t * new_list(void)

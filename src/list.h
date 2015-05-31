@@ -1,6 +1,7 @@
 #ifndef list_H
 #define list_H
 
+#include "stdbool.h"
 typedef struct list_t list_t;
 
 struct list_interface_t
@@ -10,7 +11,7 @@ struct list_interface_t
     void (* dtor)(list_t * list);
     unsigned int (* get_length)(list_t * list);
     void (* add)(list_t * list, void * element);
-    void (* pop)(list_t * list, void * element);
+    bool (* pop)(list_t * list, void * element);
 };
 
 /*
