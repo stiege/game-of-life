@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "list.h"
 
+#define LENGTH_OF(a) (sizeof(a)/sizeof(a[0]))
+
 struct list_interface_t * list_interface = NULL;
 
 struct test_t
@@ -8,6 +10,40 @@ struct test_t
     int a;
     int b;
 };
+
+struct test_t const test_array[] =
+{
+    [0] = {
+        .a = 0,
+        .b = 0
+    },
+    [1] = {
+        .a = 2,
+        .b = 2
+    },
+    [2] = {
+        .a = 1,
+        .b = 1
+    }
+};
+
+struct test_t const sorted_test_array[] =
+{
+    [0] = {
+        .a = 0,
+        .b = 0
+    },
+    [1] = {
+        .a = 1,
+        .b = 1
+    },
+    [2] = {
+        .a = 2,
+        .b = 2
+    }
+};
+
+static int sort_function(void const * _x, void const * _y);
 
 void setUp(void)
 {
@@ -52,4 +88,44 @@ void test_empty_pop_does_nothing(void)
     struct test_t expected = {.a=3,.b=4};
     TEST_ASSERT_EQUAL_MEMORY(&expected, &element,
     sizeof(struct test_t));
+}
+
+void test_list_can_sort(void)
+{
+    /*"Largest" as defined by sort_function is popped first*/
+    list_t * test_list = list_interface->ctor(list_interface,0);
+
+    struct test_t received;
+    for (int i = 0; i < LENGTH_OF(test_array); ++i)
+    {
+        list_interface->add(test_list, &test_array[i]);
+    }
+
+    list_interface->sort(test_list, sort_function);
+
+    for (unsigned int i = LENGTH_OF(test_array) - 1; i > 0 ; --i)
+    {
+        list_interface->pop(test_list, &received);
+        TEST_ASSERT_EQUAL_MEMORY(&sorted_test_array[i], &received,
+            sizeof(struct test_t));
+    }
+
+    list_interface->dtor(test_list);
+}
+
+static int sort_function(void const * _x, void const * _y)
+{
+    struct test_t const * x = _x;
+    struct test_t const * y = _y;
+
+    int ret_val = 0;
+    if (0 != (x->b - y->b))
+    {
+        ret_val = (x->b - y->b);
+    }
+    else
+    {
+        ret_val = (x->a - y->a);
+    }
+    return ret_val;
 }

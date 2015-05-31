@@ -10,8 +10,10 @@ struct list_interface_t
         unsigned int length);
     void (* dtor)(list_t * list);
     unsigned int (* get_length)(list_t * list);
-    void (* add)(list_t * list, void * element);
+    void (* add)(list_t * list, void const * const element);
     bool (* pop)(list_t * list, void * element);
+    void (* sort)(list_t * list,
+        int (* compare)(void const * element_a, void const * element_b));
 };
 
 /*

@@ -17,10 +17,12 @@ static list_t * LIST_ctor (struct list_interface_t * interface,
     unsigned int length);
 static void LIST_dtor (list_t * list);
 static unsigned int LIST_get_length (list_t * list);
-static void LIST_add (list_t * list, void * element);
+static void LIST_add (list_t * list, void const * const element);
 static void list_copy (list_t * destination, list_t const * const source);
 static unsigned int LIST_get_size (struct list_interface_t * list);
 static bool LIST_pop (list_t * list, void * element);
+static void LIST_sort (list_t * list,
+    int (* compare)(void const * element_a, void const * element_b));
 static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
 
@@ -31,7 +33,8 @@ static struct list_t null_list =
         .dtor = LIST_dtor,
         .get_length = LIST_get_length,
         .add = LIST_add,
-        .pop = LIST_pop
+        .pop = LIST_pop,
+        .sort = LIST_sort
     },
     .data = NULL,
     .length = 0,
@@ -81,7 +84,7 @@ static unsigned int LIST_get_length(list_t * list)
     return ret_val;
 }
 
-static void LIST_add(list_t * list, void * element)
+static void LIST_add(list_t * list, void const * const element)
 {
     if (    (NULL != list)
         &&  (NULL != element))
@@ -134,5 +137,11 @@ static struct list_t * new_list(void)
     struct list_t * list = malloc(sizeof(struct list_t));
     list_copy(list, &null_list);
     return list;
+}
+
+static void LIST_sort (list_t * list,
+    int (* compare)(void const * element_a, void const * element_b))
+{
+    qsort(list->data, list->length, list->element_size, compare);
 }
 

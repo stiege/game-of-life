@@ -24,6 +24,9 @@ char const * oscillator_board =
 " o \n"
 " o \n";
 
+
+static int sort_function (void * a, void * b);
+
 const struct cell_t underpopulated_cell_from_board = {.x=1,.y=1};
 const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
 struct mstats mdata_before;

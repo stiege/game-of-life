@@ -376,7 +376,6 @@ static void get_repeated(cell_list_t * birth_list, cell_list_t * list,
             sizeof(struct cell_t)))
             && ((i+matching_cells) < list->length))
         {//Same cell
-            struct cell_t error_cell = {.x=0,.y=2};
             matching_cells++;
         }
 
