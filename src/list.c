@@ -13,8 +13,7 @@ struct list_t
 };
 
 
-static list_t * LIST_ctor (struct list_interface_t * interface,
-    unsigned int length);
+static list_t * LIST_ctor (struct list_interface_t * interface);
 static void LIST_dtor (list_t * list);
 static unsigned int LIST_get_length (list_t * list);
 static void LIST_add (list_t * list, void const * const element);
@@ -59,12 +58,10 @@ void LIST_factory_dtor(struct list_interface_t const * const interface)
     return;
 }
 
-static list_t * LIST_ctor(struct list_interface_t * interface,
-    unsigned int length)
+static list_t * LIST_ctor(struct list_interface_t * interface)
 {
-    struct list_t * list = (struct list_t *)interface;
-    unsigned int element_size = list->element_size;
-
+    struct list_t * list = new_list();
+    list_copy(list, (list_t *)interface);
     return list;
 }
 

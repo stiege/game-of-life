@@ -6,8 +6,7 @@ typedef struct list_t list_t;
 
 struct list_interface_t
 {
-    list_t * (* ctor)(struct list_interface_t * interface,
-        unsigned int length);
+    list_t * (* ctor)(struct list_interface_t * interface);
     void (* dtor)(list_t * list);
     unsigned int (* get_length)(list_t * list);
     void (* add)(list_t * list, void const * const element);

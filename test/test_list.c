@@ -63,6 +63,7 @@ void setUp(void)
 
 void tearDown(void)
 {
+    LIST_factory_dtor(list_interface);
     if(!mem_leak_workaround)
     {
         TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
@@ -72,14 +73,14 @@ void tearDown(void)
 void test_memory_leak()
 {
     mem_leak_workaround = true;
-    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_t * test_list = list_interface->ctor(list_interface);
     list_interface->dtor(test_list);
 }
 
 void test_can_add_and_pop(void)
 {
     /*LIFO list*/
-    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_t * test_list = list_interface->ctor(list_interface);
 
     struct test_t first_element = {.a=3,.b=4};
     struct test_t second_element = {.a=12,.b=24};
@@ -102,7 +103,7 @@ void test_can_add_and_pop(void)
 
 void test_empty_pop_does_nothing(void)
 {
-    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_t * test_list = list_interface->ctor(list_interface);
     struct test_t element = {.a=3,.b=4};
     TEST_ASSERT_FALSE(list_interface->pop(test_list, &element));
     struct test_t expected = {.a=3,.b=4};
@@ -114,7 +115,7 @@ void test_empty_pop_does_nothing(void)
 void test_list_can_sort(void)
 {
     /*"Largest" as defined by sort_function is popped first*/
-    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_t * test_list = list_interface->ctor(list_interface);
 
     struct test_t received;
     for (int i = 0; i < LENGTH_OF(test_array); ++i)
@@ -137,7 +138,7 @@ void test_list_can_sort(void)
 void test_can_iterate(void)
 {
     /*"Largest" as defined by sort_function is popped first*/
-    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_t * test_list = list_interface->ctor(list_interface);
 
     /*Put array elements into test list*/
     for (int i = 0; i < LENGTH_OF(test_array); ++i)
@@ -162,6 +163,36 @@ void test_can_iterate(void)
     }
 
     list_interface->dtor(test_list);
+}
+
+void test_multiple_lists(void)
+{
+    list_t * first_list = list_interface->ctor(list_interface);
+    list_t * second_list = list_interface->ctor(list_interface);
+
+    for (int i = 0; i < LENGTH_OF(test_array); ++i)
+    {
+        list_interface->add(first_list, &test_array[i]);
+        list_interface->add(second_list, &sorted_test_array[i]);
+    }
+
+    struct test_t first_list_element = {0};
+    struct test_t second_list_element = {0};
+    for (int i = LENGTH_OF(test_array) - 1; i > 0 ; --i)
+    {
+        TEST_ASSERT(list_interface->pop(first_list, &first_list_element));
+        TEST_ASSERT(list_interface->pop(second_list, &second_list_element));
+        TEST_ASSERT_EQUAL_MEMORY(&test_array[i],
+            &first_list_element,
+            sizeof(struct test_t));
+        TEST_ASSERT_EQUAL_MEMORY(&sorted_test_array[i],
+            &second_list_element,
+            sizeof(struct test_t));
+    }
+
+    list_interface->dtor(first_list);
+    list_interface->dtor(second_list);
+
 }
 
 static int sort(void const * _x, void const * _y)
