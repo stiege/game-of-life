@@ -44,7 +44,7 @@ struct test_t const sorted_test_array[] =
 };
 
 static int sort (void const * _x, void const * _y);
-static void iterate (void * element);
+static void iterate (void * element, void * args);
 
 void setUp(void)
 {
@@ -161,7 +161,7 @@ static int sort(void const * _x, void const * _y)
     return ret_val;
 }
 
-static void iterate(void * _element)
+static void iterate(void * _element, void * args)
 {
     struct test_t * element = _element;
     element->a += 1;

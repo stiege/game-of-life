@@ -14,7 +14,8 @@ struct list_interface_t
     bool (* pop)(list_t * list, void * element);
     void (* sort)(list_t * list,
         int (* compare)(void const * element_a, void const * element_b));
-    void (* iterate)(list_t * list, void (* action)(void * element));
+    void (* iterate)(list_t * list,
+        void (* action)(void * element, void * args));
 };
 
 /*

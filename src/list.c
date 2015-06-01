@@ -25,7 +25,9 @@ static void LIST_sort (list_t * list,
     int (* compare)(void const * element_a, void const * element_b));
 static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
-static void LIST_iterate(list_t * list, void (* action)(void * element));
+static void LIST_iterate(list_t * list,
+    void (* action)(void * element,
+    void * args));
 
 static struct list_t null_list =
 {
@@ -147,10 +149,11 @@ static void LIST_sort (list_t * list,
     qsort(list->data, list->length, list->element_size, compare);
 }
 
-static void LIST_iterate(list_t * list, void (* action)(void * element))
+static void LIST_iterate(list_t * list,
+    void (* action)(void * element, void * args))
 {
     for (int i = 0; i < list->length; ++i)
     {
-        action(&list->data[i * list->element_size]);
+        action(&list->data[i * list->element_size], NULL);
     }
 }
