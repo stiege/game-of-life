@@ -127,9 +127,10 @@ void test_can_find_cells_being_born(void)
         CELL_filter_for_births(cell_list);
     TEST_ASSERT_NOT_NULL(birth_list);
     struct cell_t returned_cell;
-    TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
-    TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
-    TEST_ASSERT(CELL_pop_from_list(cell_list, &returned_cell));
+    TEST_ASSERT(CELL_pop_from_list(birth_list, &returned_cell));
+    TEST_ASSERT(CELL_pop_from_list(birth_list, &returned_cell));
+    TEST_ASSERT(CELL_pop_from_list(birth_list, &returned_cell));
+    TEST_ASSERT_FALSE(CELL_pop_from_list(cell_list, &returned_cell));
     CELL_list_dtor(cell_list);
     CELL_list_dtor(birth_list);
     CELL_deinit();
