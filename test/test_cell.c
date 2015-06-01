@@ -32,7 +32,6 @@ const struct cell_t underpopulated_in_corner = {.x=0,.y=0};
 struct mstats mdata_before;
 
 static bool mem_leak_workaround;
-
 void setUp(void)
 {
     mem_leak_workaround = false;

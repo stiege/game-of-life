@@ -2,6 +2,7 @@
 #define cell_H
 
 #include "stdbool.h"
+#include "list.h"
 
 struct cell_t
 {
@@ -9,7 +10,7 @@ struct cell_t
     unsigned int y;
 };
 
-typedef struct cell_list_t cell_list_t;
+typedef list_t cell_list_t;
 
 cell_list_t * CELL_list_from_string (char const * string);
 cell_list_t * CELL_filter_for_underpopulated (cell_list_t * cells);

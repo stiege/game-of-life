@@ -9,6 +9,7 @@
 struct mstats mdata_before;
 static bool mem_leak_workaround;
 
+#if 0
 void setUp(void)
 {
     mem_leak_workaround = false;
@@ -151,3 +152,5 @@ void test_cells_are_born_2(void)
         " o \n", GME_show(game_board));
     GME_game_board_dtor(game_board);
 }
+
+#endif
