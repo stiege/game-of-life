@@ -26,8 +26,7 @@ static void LIST_sort (list_t * list,
 static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
 static void LIST_iterate(list_t * list,
-    void (* action)(void * element,
-    void * args));
+    void (* action)(void * element, void * args), void * args);
 
 static struct list_t null_list =
 {
@@ -53,14 +52,18 @@ struct list_interface_t const * const LIST_factory_ctor(
     return (struct list_interface_t *)list;
 }
 
+void LIST_factory_dtor(struct list_interface_t const * const interface)
+{
+    struct list_t * list = (struct list_t *)interface;
+    LIST_dtor(list);
+    return;
+}
+
 static list_t * LIST_ctor(struct list_interface_t * interface,
     unsigned int length)
 {
     struct list_t * list = (struct list_t *)interface;
     unsigned int element_size = list->element_size;
-    struct list_t * _new_list = new_list();
-    _new_list->data = malloc(element_size * length);
-    _new_list->element_size = element_size;
 
     return list;
 }
@@ -150,10 +153,10 @@ static void LIST_sort (list_t * list,
 }
 
 static void LIST_iterate(list_t * list,
-    void (* action)(void * element, void * args))
+    void (* action)(void * element, void * args), void * args)
 {
     for (int i = 0; i < list->length; ++i)
     {
-        action(&list->data[i * list->element_size], NULL);
+        action(&list->data[i * list->element_size], args);
     }
 }

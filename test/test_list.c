@@ -1,5 +1,6 @@
 #include "unity.h"
 #include "list.h"
+#include "malloc/malloc.h"
 
 #define LENGTH_OF(a) (sizeof(a)/sizeof(a[0]))
 
@@ -43,11 +44,17 @@ struct test_t const sorted_test_array[] =
     }
 };
 
+static bool mem_leak_workaround;
+struct mstats mdata_before;
+
 static int sort (void const * _x, void const * _y);
 static void iterate (void * element, void * args);
 
 void setUp(void)
 {
+    mem_leak_workaround = false;
+    mdata_before = mstats();
+
     list_interface = (struct list_interface_t *)LIST_factory_ctor(
         sizeof(struct test_t));
     TEST_ASSERT_NOT_NULL(list_interface);
@@ -56,6 +63,17 @@ void setUp(void)
 
 void tearDown(void)
 {
+    if(!mem_leak_workaround)
+    {
+        TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
+    }
+}
+
+void test_memory_leak()
+{
+    mem_leak_workaround = true;
+    list_t * test_list = list_interface->ctor(list_interface,0);
+    list_interface->dtor(test_list);
 }
 
 void test_can_add_and_pop(void)
@@ -81,6 +99,7 @@ void test_can_add_and_pop(void)
     list_interface->dtor(test_list);
 }
 
+
 void test_empty_pop_does_nothing(void)
 {
     list_t * test_list = list_interface->ctor(list_interface,0);
@@ -89,6 +108,7 @@ void test_empty_pop_does_nothing(void)
     struct test_t expected = {.a=3,.b=4};
     TEST_ASSERT_EQUAL_MEMORY(&expected, &element,
     sizeof(struct test_t));
+    list_interface->dtor(test_list);
 }
 
 void test_list_can_sort(void)
@@ -126,7 +146,7 @@ void test_can_iterate(void)
     }
 
     /*iterate over list elements*/
-    list_interface->iterate(test_list, iterate);
+    list_interface->iterate(test_list, iterate, NULL);
 
     /*Pop from list and check all have been modified by iterate function*/
     struct test_t received_element = {0};
