@@ -43,7 +43,8 @@ struct test_t const sorted_test_array[] =
     }
 };
 
-static int sort_function(void const * _x, void const * _y);
+static int sort (void const * _x, void const * _y);
+static void iterate (void * element);
 
 void setUp(void)
 {
@@ -101,7 +102,7 @@ void test_list_can_sort(void)
         list_interface->add(test_list, &test_array[i]);
     }
 
-    list_interface->sort(test_list, sort_function);
+    list_interface->sort(test_list, sort);
 
     for (unsigned int i = LENGTH_OF(test_array) - 1; i > 0 ; --i)
     {
@@ -113,7 +114,37 @@ void test_list_can_sort(void)
     list_interface->dtor(test_list);
 }
 
-static int sort_function(void const * _x, void const * _y)
+void test_can_iterate(void)
+{
+    /*"Largest" as defined by sort_function is popped first*/
+    list_t * test_list = list_interface->ctor(list_interface,0);
+
+    /*Put array elements into test list*/
+    for (int i = 0; i < LENGTH_OF(test_array); ++i)
+    {
+        list_interface->add(test_list, &test_array[i]);
+    }
+
+    /*iterate over list elements*/
+    list_interface->iterate(test_list, iterate);
+
+    /*Pop from list and check all have been modified by iterate function*/
+    struct test_t received_element = {0};
+    struct test_t expected_element = {0};
+    for (int i = LENGTH_OF(test_array) - 1; i > 0; --i)
+    {
+        list_interface->pop(test_list, &received_element);
+        expected_element = test_array[i];
+        expected_element.a += 1;
+        TEST_ASSERT_EQUAL_MEMORY(&expected_element,
+            &received_element,
+            sizeof(struct test_t));
+    }
+
+    list_interface->dtor(test_list);
+}
+
+static int sort(void const * _x, void const * _y)
 {
     struct test_t const * x = _x;
     struct test_t const * y = _y;
@@ -128,4 +159,10 @@ static int sort_function(void const * _x, void const * _y)
         ret_val = (x->a - y->a);
     }
     return ret_val;
+}
+
+static void iterate(void * _element)
+{
+    struct test_t * element = _element;
+    element->a += 1;
 }
