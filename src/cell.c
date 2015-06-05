@@ -19,12 +19,30 @@ struct count_neighbour_arg_t
     unsigned int * neighbour_count;
 };
 
+struct add_birth_cells_to_list_arg_t
+{
+    cell_list_t * this_list;
+    cell_list_t * birth_list;
+};
+
+struct count_duplicates_arg_t
+{
+    unsigned int * duplicate_count;
+    cell_list_t * current_cell;
+};
+
+struct find_birth_cells_args_t
+{
+    cell_list_t * this_list;
+    cell_list_t * birth_list;
+};
+
 static void get_underpopulated (void * cell_list,
     void * args);
 static bool cells_are_close(struct cell_t * cell_a, struct cell_t * cell_b);
 static bool uints_are_close(unsigned int a, unsigned int b);
 static int cell_compare(const void * cell_a, const void * cell_b);
-static cell_list_t * find_birth_cells(cell_list_t * list);
+static void find_birth_cells(void * list, void * birth_list);
 static unsigned int count_repeated(cell_list_t * list, unsigned int n_repeated);
 static void add_birth_cells_to_list(
     void * birth_list,
@@ -32,6 +50,7 @@ static void add_birth_cells_to_list(
 static void add_neighbours(void * cell_list,
     void * args);
 static void count_neighbours(void * element, void * count);
+static void count_duplicates(void * element, void * _args);
 
 /*Not to be modified, "const" but assigned at runtime*/
 static struct list_interface_t * list_interface;
@@ -142,10 +161,13 @@ cell_list_t * CELL_filter_for_births(cell_list_t * cells)
     else
     {
         cell_list_t * big_list = list_interface->ctor(list_interface);
-        list_interface->iterate(big_list, add_neighbours, big_list);
-        list_interface->sort(big_list, cell_compare);
-        list_interface->dtor(ret_val);
-        ret_val = find_birth_cells(big_list);
+        list_interface->iterate(cells, add_neighbours, big_list);
+        struct find_birth_cells_args_t find_birth_cells_args =
+        {
+            .this_list = big_list,
+            .birth_list = ret_val
+        };
+        list_interface->iterate(big_list,find_birth_cells,&find_birth_cells_args);
         list_interface->dtor(big_list);
     }
 
@@ -254,37 +276,49 @@ static int cell_compare(const void * _cell_a, const void * _cell_b)
     return ret_val;
 }
 
-static cell_list_t * find_birth_cells(cell_list_t * list)
+static void find_birth_cells(void * element,
+    void * _args)
 {
-    cell_list_t * birth_list = list_interface->ctor(list_interface);
-    list_interface->iterate(list, add_birth_cells_to_list, birth_list);
-    return birth_list;
+    struct find_birth_cells_args_t * args = _args;
+    /*Iterate through list*/
+    list_interface->iterate(args->this_list,
+        add_birth_cells_to_list,
+        args);
 }
 
-static void add_birth_cells_to_list(void * cell, void * args)
+static void add_birth_cells_to_list(void * cell, void * _args)
 {
     /*For each cell iterate through again and find replicates*/
-    #if 0
-    unsigned int n_repeated = 3;
-    struct cell_t current_cell = list->list[i];
-    unsigned int matching_cells = 0;
-    while (
-        (!memcmp(
-        &list->list[i + matching_cells + 1], 
-        &list->list[i], 
-        sizeof(struct cell_t)))
-        && ((i+matching_cells) < list->length))
-    {//Same cell
-        matching_cells++;
-    }
-
-    if (matching_cells == (n_repeated-1))
+    unsigned int duplicate_count = 0;
+    struct add_birth_cells_to_list_arg_t * args = _args;
+    struct count_duplicates_arg_t count_duplicates_arg = 
     {
-        birth_list->list[birth_list->length]=current_cell;
-        birth_list->length += 1;
+        .duplicate_count = &duplicate_count,
+        .current_cell = cell
+    };
+    /*need to pass in duplicate_count and current cell and iterate over the
+    current list*/
+    list_interface->iterate(args->this_list, 
+        count_duplicates, &count_duplicates_arg);
 
+    // printf("%d\n", duplicate_count);
+    if (duplicate_count == 2)
+    {
+        // printf("Duplicate\n");
+        list_interface->add(args->birth_list, cell);
     }
+}
 
-    i += matching_cells;
-#endif
+static void count_duplicates(void * _cell, void * _args)
+{
+    struct cell_t * cell = _cell;
+    struct count_duplicates_arg_t * args = _args;
+    if (
+        (!memcmp(
+        cell, 
+        args->current_cell, 
+        sizeof(struct cell_t))))
+    {
+        *args->duplicate_count += 1;
+    }
 }

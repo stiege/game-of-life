@@ -192,7 +192,18 @@ void test_multiple_lists(void)
 
     list_interface->dtor(first_list);
     list_interface->dtor(second_list);
+}
 
+void test_detects_contains(void)
+{
+    list_t * list = list_interface->ctor(list_interface);
+    for (int i = 0; i < LENGTH_OF(test_array); ++i)
+    {
+        list_interface->add(list, &test_array[i]);
+    }
+
+    TEST_ASSERT(list_interface->contains(list, &test_array[1]));
+    list_interface->dtor(list);
 }
 
 static int sort(void const * _x, void const * _y)

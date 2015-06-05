@@ -26,6 +26,7 @@ static struct list_interface_t * new_interface (void);
 static struct list_t * new_list (void);
 static void LIST_iterate(list_t * list,
     void (* action)(void * element, void * args), void * args);
+static bool LIST_contains(list_t * list, void const * const element);
 
 static struct list_t null_list =
 {
@@ -36,7 +37,8 @@ static struct list_t null_list =
         .add = LIST_add,
         .pop = LIST_pop,
         .sort = LIST_sort,
-        .iterate = LIST_iterate
+        .iterate = LIST_iterate,
+        .contains = LIST_contains
     },
     .data = NULL,
     .length = 0,
@@ -156,4 +158,20 @@ static void LIST_iterate(list_t * list,
     {
         action(&list->data[i * list->element_size], args);
     }
+}
+
+static bool LIST_contains(list_t * list, void const * const element)
+{
+    bool ret_val = false;
+    for (int i = 0; i < list->length; ++i)
+    {
+        if (memcmp(
+            &list->data[i * list->element_size],
+            element,
+            sizeof(list->element_size)))
+        {
+            ret_val = true;
+        }
+    }
+    return ret_val;
 }

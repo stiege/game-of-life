@@ -15,6 +15,7 @@ struct list_interface_t
         int (* compare)(void const * element_a, void const * element_b));
     void (* iterate)(list_t * list,
         void (* action)(void * element, void * args), void * args);
+    bool (* contains)(list_t * list, void const * const element);
 };
 
 /*

@@ -12,6 +12,16 @@ struct cell_t
 
 typedef list_t cell_list_t;
 
+struct cell_list_interface_t
+{
+    struct list_interface_t list_interface;
+
+};
+
+struct cell_list_interface_t * CELL_list_factory_ctor();
+struct cell_list_interface_t * CELL_list_factory_ctor();
+
+
 cell_list_t * CELL_list_from_string (char const * string);
 cell_list_t * CELL_filter_for_underpopulated (cell_list_t * cells);
 cell_list_t * CELL_filter_for_births (cell_list_t * cells);
