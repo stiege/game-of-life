@@ -18,6 +18,7 @@ static void add_cell_to_board(struct game_board_t * board,
 
 struct game_board_t * GME_init(unsigned int _size)
 {
+    CELL_init();
     unsigned int string_size = _size * (_size + 1 ) + 1;
     struct game_board_t * game_board = malloc(sizeof(struct game_board_t));
     game_board->board_string = malloc(string_size * sizeof(char));
@@ -33,6 +34,11 @@ struct game_board_t * GME_init(unsigned int _size)
     game_board->board_string[offset] = '\0';
     game_board->size = _size;
     return game_board;
+}
+
+void GME_deinit(void)
+{
+    CELL_deinit();
 }
 
 void GME_game_board_dtor(struct game_board_t * game_board)

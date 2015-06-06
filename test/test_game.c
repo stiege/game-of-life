@@ -9,7 +9,6 @@
 struct mstats mdata_before;
 static bool mem_leak_workaround;
 
-#if 0
 void setUp(void)
 {
     mem_leak_workaround = false;
@@ -18,6 +17,7 @@ void setUp(void)
 
 void tearDown(void)
 {
+    GME_deinit();
     if(!mem_leak_workaround)
     {
         TEST_ASSERT_EQUAL_INT(mdata_before.chunks_used, mstats().chunks_used);
@@ -153,4 +153,3 @@ void test_cells_are_born_2(void)
     GME_game_board_dtor(game_board);
 }
 
-#endif
