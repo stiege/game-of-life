@@ -165,7 +165,7 @@ static bool LIST_contains(list_t * list, void const * const element)
     bool ret_val = false;
     for (int i = 0; i < list->length; ++i)
     {
-        if (memcmp(
+        if (!memcmp(
             &list->data[i * list->element_size],
             element,
             sizeof(list->element_size)))

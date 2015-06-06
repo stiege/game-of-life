@@ -179,7 +179,7 @@ static void add_neighbours(void * _cell,
 {
     struct cell_t cell = *(struct cell_t *)_cell;
     cell_list_t * list = _args;
-    struct cell_t add_cell= { .x = cell.x - 1,.y = cell.y - 1};
+    struct cell_t add_cell = { .x = cell.x - 1,.y = cell.y - 1};
     list_interface->add(list, &add_cell);
     add_cell= (struct cell_t){ .x = cell.x    ,.y = cell.y - 1};
     list_interface->add(list, &add_cell);
@@ -286,26 +286,28 @@ static void find_birth_cells(void * element,
         args);
 }
 
-static void add_birth_cells_to_list(void * cell, void * _args)
+static void add_birth_cells_to_list(void * _cell, void * _args)
 {
     /*For each cell iterate through again and find replicates*/
+    struct cell_t * cell = _cell;
     unsigned int duplicate_count = 0;
     struct add_birth_cells_to_list_arg_t * args = _args;
     struct count_duplicates_arg_t count_duplicates_arg = 
     {
         .duplicate_count = &duplicate_count,
-        .current_cell = cell
+        .current_cell = _cell
     };
     /*need to pass in duplicate_count and current cell and iterate over the
     current list*/
     list_interface->iterate(args->this_list, 
         count_duplicates, &count_duplicates_arg);
 
-    // printf("%d\n", duplicate_count);
     if (duplicate_count == 2)
     {
-        // printf("Duplicate\n");
-        list_interface->add(args->birth_list, cell);
+        if (!list_interface->contains(args->birth_list, cell))
+        {
+            list_interface->add(args->birth_list, cell);
+        }
     }
 }
 
