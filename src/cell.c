@@ -215,7 +215,7 @@ static void get_underpopulated(void * cell,
         count_neighbours,
         &count_neighbours_arg);
 
-    if (neighbour_count < 3)
+    if (neighbour_count < 2)
     {
         list_interface->add(args->underpopulated_list, cell);
     }
