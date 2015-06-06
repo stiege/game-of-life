@@ -168,7 +168,7 @@ static bool LIST_contains(list_t * list, void const * const element)
         if (!memcmp(
             &list->data[i * list->element_size],
             element,
-            sizeof(list->element_size)))
+            list->element_size))
         {
             ret_val = true;
         }
