@@ -302,7 +302,7 @@ static void add_birth_cells_to_list(void * _cell, void * _args)
     list_interface->iterate(args->this_list, 
         count_duplicates, &count_duplicates_arg);
 
-    if (duplicate_count == 2)
+    if (duplicate_count == 3)
     {
         if (!list_interface->contains(args->birth_list, cell))
         {
