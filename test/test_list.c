@@ -108,7 +108,7 @@ void test_empty_pop_does_nothing(void)
     TEST_ASSERT_FALSE(list_interface->pop(test_list, &element));
     struct test_t expected = {.a=3,.b=4};
     TEST_ASSERT_EQUAL_MEMORY(&expected, &element,
-    sizeof(struct test_t));
+        sizeof(struct test_t));
     list_interface->dtor(test_list);
 }
 

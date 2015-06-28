@@ -14,7 +14,7 @@ struct unit_interface_t
 {
     unit_t * (* ctor)(
         struct unit_interface_t * unit_interface, enum unit_type);
-    cell_list_t * (* get_cell_list)();
+    cell_list_t * (* get_cell_list)(unit_t * p_block_unit);
 };
 
 
